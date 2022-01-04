@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showTabContent(i = 0) {
         tabsContent[i].classList.remove('hide');
-        tabsContent[i].classList.add('show','fade');
+        tabsContent[i].classList.add('show', 'fade');
         tabsChild[i].classList.add('tabheader__item_active');
     }
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (item == e.target) {
                     hideTabContent();
                     showTabContent(i);
-                } 
+                }
             });
         }
     });
@@ -74,12 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ===============Timer================ */
 
-     const deadLine = '2022-01-13';
-     function getTimeRemaining(endtime) {
+    const deadLine = '2022-01-14';
+    function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date());
         const days = Math.floor(t / (1000 * 60 * 60 * 24));
         const hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((t / 1000 /60) % 60);
+        const minutes = Math.floor((t / 1000 / 60) % 60);
         const seconds = Math.floor((t / 1000) % 60);
 
         return {
@@ -89,18 +89,18 @@ document.addEventListener('DOMContentLoaded', () => {
             minutes: minutes,
             seconds: seconds,
         };
-        
-     }
-     
-     function getZero(num) {
-         if(num >= 0 && num < 10) {
-             return `0${num}`;
-         } else {
-             return num;
-         }
-     }
 
-     function setClock(selector, endtime) {
+    }
+
+    function getZero(num) {
+        if (num >= 0 && num < 10) {
+            return `0${num}`;
+        } else {
+            return num;
+        }
+    }
+
+    function setClock(selector, endtime) {
         const timer = document.querySelector(selector);
         const days = timer.querySelector('#days');
         const hours = timer.querySelector('#hours');
@@ -118,14 +118,49 @@ document.addEventListener('DOMContentLoaded', () => {
             minutes.innerHTML = getZero(t.minutes);
             seconds.innerHTML = getZero(t.seconds);
 
-            if(t.total <= 0) {
+            if (t.total <= 0) {
                 clearInterval(timeInterval);
             }
         }
-        
-     }
-     setClock('.timer', deadLine);
+
+    }
+    setClock('.timer', deadLine);
     /* =========================================== */
+    /* ===================Modal===================== */
+    const modalOpen = document.querySelectorAll('[data-modal]');
+    const modal = document.querySelector('.modal');
+    const modalClose = document.querySelectorAll('[data-close]');
+
+    modalOpen.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.add('show');
+            modal.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    modalClose.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if(e.code === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+    /* ============================================= */
 });
 
 
