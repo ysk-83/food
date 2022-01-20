@@ -275,30 +275,56 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-            request.setRequestHeader('Content-type', 'application/json');
+            // реализация отправки запроса на сервер чeрез fetch API(json-формат)
             const formData = new FormData(form);
             const object = {};
             formData.forEach(function (value, key) {
                 object[key] = value;
             });
             const json = JSON.stringify(object);
-            request.send(json);
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
+            
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: json,
+            }).then(data => data.text())
+                .then(data => {
+                    console.log(data);
                     showThanksModal(message.success);
-                    form.reset();
                     statusMessage.remove();
-
-                    console.log(request.response);
-                } else {
+                }).catch(() => {
                     showThanksModal(message.failure);
+                }).finally(() => {
                     form.reset();
-                    statusMessage.remove();
-                }
-            });
+                });
+
+            /* // реализация отправки запроса на сервер чeрез ajax API(json-формат)
+                        const request = new XMLHttpRequest();
+                        request.open('POST', 'server.php');
+                        request.setRequestHeader('Content-type', 'application/json');
+                        const formData = new FormData(form);
+                        const object = {};
+                        formData.forEach(function (value, key) {
+                            object[key] = value;
+                        });
+                        const json = JSON.stringify(object);
+                        request.send(json);
+            
+                        request.addEventListener('load', () => {
+                            if (request.status === 200) {
+                                showThanksModal(message.success);
+                                form.reset();
+                                statusMessage.remove();
+            
+                                console.log(request.response);
+                            } else {
+                                showThanksModal(message.failure);
+                                form.reset();
+                                statusMessage.remove();
+                            }
+                        }); */
         });
     }
 
@@ -326,9 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
-
-
     /* -============================================== */
+
 
 });
 
