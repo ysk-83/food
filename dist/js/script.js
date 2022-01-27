@@ -219,6 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    
+
     new MenuItem(
         '"Фитнес"',
         'vegy',
@@ -260,10 +262,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     forms.forEach(item => {
-        postData(item);
+        bindPostData(item);
     });
+// реализация отправки данных на сервер через функцию.
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: data,
+        });
 
-    function postData(form) {
+        return await res.json();
+    };
+
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -277,19 +291,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // реализация отправки запроса на сервер чeрез fetch API(json-формат)
             const formData = new FormData(form);
-            const object = {};
+            // 1 вариант реализации преобразования данных формы FormData в формат JSON
+            /* const object = {};
             formData.forEach(function (value, key) {
                 object[key] = value;
-            });
-            const json = JSON.stringify(object);
-            
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: json,
-            }).then(data => data.text())
+            }); */
+
+            // 2 вариант реализации преобразования данных формы FormData в формат JSON(более новый способ)
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+            postData('http://localhost:3000/requests', json)
                 .then(data => {
                     console.log(data);
                     showThanksModal(message.success);
@@ -299,8 +310,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).finally(() => {
                     form.reset();
                 });
+            
+// отправа данных из формы на сервер,без функции
+           /*  fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(object),
+            })
+                .then(data => data.text())
+                .then(data => {
+                    console.log(data);
+                    showThanksModal(message.success);
+                    statusMessage.remove();
+                }).catch(() => {
+                    showThanksModal(message.failure);
+                }).finally(() => {
+                    form.reset();
+                }); */
 
-            /* // реализация отправки запроса на сервер чeрез ajax API(json-формат)
+            /* // реализация отправки запроса на сервер чeрез ajax (json-формат)
                         const request = new XMLHttpRequest();
                         request.open('POST', 'server.php');
                         request.setRequestHeader('Content-type', 'application/json');
