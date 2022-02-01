@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             cardMenu.innerHTML =
                 ` <img src=${this.src} alt=${this.alt}>
-                <h3 class="menu__item-subtitle">Меню ${this.title}</h3>
+                <h3 class="menu__item-subtitle">${this.title}</h3>
                 <div class="menu__item-descr">${this.description}</div>
                 <div class="menu__item-divider"></div>
                 <div class="menu__item-price">
@@ -219,36 +219,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const getResource = async (url) => {
+        const res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+
+        return await res.json();
+    };
+
+    getResource('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({ title, altimg, img, descr, price }) => {
+                new MenuItem(title, altimg, img, descr, price, '.menu .container').render();
+            });
+        });
+
+    /*     new MenuItem(
+            '"Фитнес"',
+            'vegy',
+            "img/tabs/vegy.jpg",
+            'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+            19,
+            '.menu .container'
+        ).render();
     
-
-    new MenuItem(
-        '"Фитнес"',
-        'vegy',
-        "img/tabs/vegy.jpg",
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        19,
-        '.menu .container'
-    ).render();
-
-    new MenuItem(
-        '“Премиум”',
-        "elite",
-        "img/tabs/elite.jpg",
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        20,
-        '.menu .container',
-        'menu__item'
-    ).render();
-
-    new MenuItem(
-        '"Постное"',
-        "post",
-        "img/tabs/post.jpg",
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков. ',
-        18,
-        '.menu .container',
-        'menu__item'
-    ).render();
+        new MenuItem(
+            '“Премиум”',
+            "elite",
+            "img/tabs/elite.jpg",
+            'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+            20,
+            '.menu .container',
+            'menu__item'
+        ).render();
+    
+        new MenuItem(
+            '"Постное"',
+            "post",
+            "img/tabs/post.jpg",
+            'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков. ',
+            18,
+            '.menu .container',
+            'menu__item'
+        ).render(); */
     /* ============================================== */
 
 
@@ -264,7 +279,8 @@ document.addEventListener('DOMContentLoaded', () => {
     forms.forEach(item => {
         bindPostData(item);
     });
-// реализация отправки данных на сервер через функцию.
+
+    // реализация отправки данных на сервер через функцию.
     const postData = async (url, data) => {
         const res = await fetch(url, {
             method: 'POST',
@@ -276,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return await res.json();
     };
+
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
@@ -310,25 +327,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).finally(() => {
                     form.reset();
                 });
-            
-// отправа данных из формы на сервер,без функции
-           /*  fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify(object),
-            })
-                .then(data => data.text())
-                .then(data => {
-                    console.log(data);
-                    showThanksModal(message.success);
-                    statusMessage.remove();
-                }).catch(() => {
-                    showThanksModal(message.failure);
-                }).finally(() => {
-                    form.reset();
-                }); */
+
+            // отправа данных из формы на сервер,без функции
+            /*  fetch('server.php', {
+                 method: 'POST',
+                 headers: {
+                     'content-type': 'application/json'
+                 },
+                 body: JSON.stringify(object),
+             })
+                 .then(data => data.text())
+                 .then(data => {
+                     console.log(data);
+                     showThanksModal(message.success);
+                     statusMessage.remove();
+                 }).catch(() => {
+                     showThanksModal(message.failure);
+                 }).finally(() => {
+                     form.reset();
+                 }); */
 
             /* // реализация отправки запроса на сервер чeрез ajax (json-формат)
                         const request = new XMLHttpRequest();
