@@ -219,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     const getResource = async (url) => {
         const res = await fetch(url);
 
@@ -229,12 +230,39 @@ document.addEventListener('DOMContentLoaded', () => {
         return await res.json();
     };
 
+    // получение данных карточек из db.json. 1 вариант с использование класса
     getResource('http://localhost:3000/menu')
         .then(data => {
             data.forEach(({ title, altimg, img, descr, price }) => {
                 new MenuItem(title, altimg, img, descr, price, '.menu .container').render();
             });
         });
+
+
+
+    // получение данных карточек из db.json. 2 вариант(без использования класа,формируем карточки "на лету")
+    /* getResource('http://localhost:3000/menu')
+        .then(data => createCard(data));
+
+    function createCard(data) {
+        data.forEach(({ title, altimg, img, descr, price }) => {
+            const card = document.createElement('div');
+            card.classList.add('menu__item');
+            card.innerHTML = `
+                    <img src=${img} alt=${altimg}>
+                    <h3 class="menu__item-subtitle">${title}</h3>
+                    <div class="menu__item-descr">${descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${price}</span> грн/день</div>
+                    </div> 
+                    `;
+
+            document.querySelector('.menu .container').append(card);
+        });
+    } */
+
 
     /*     new MenuItem(
             '"Фитнес"',
