@@ -430,6 +430,66 @@ document.addEventListener('DOMContentLoaded', () => {
     /* -============================================== */
 
 
+
+    // =========================slider==============================
+
+    const sliderItems = document.querySelectorAll('.offer__slide');
+    const sliderPrev = document.querySelector('.offer__slider-prev');
+    const sliderNext = document.querySelector('.offer__slider-next');
+    const total = document.querySelector('#total');
+    const current = document.querySelector('#current');
+
+    let slideIndex = 1; //установили индекс на единицу для удобства,отсчет текущего слайда будет начинатся с единицы,а не нуля
+
+    showSlides(slideIndex);
+
+    if (sliderItems.length < 10) {
+        total.textContent = `0${sliderItems.length}`;
+    }
+    else {
+        total.textContent = `${sliderItems.length}`;
+    }
+
+    function showSlides(n) {
+
+        if (n > sliderItems.length) {
+            slideIndex = 1;
+        }
+        if (n < 1) {
+            slideIndex = sliderItems.length;
+        }
+
+        sliderItems.forEach(slide => {
+            slide.classList.add('hide');
+
+        });
+
+        sliderItems[slideIndex - 1].classList.remove('hide');
+        sliderItems[slideIndex - 1].classList.add('flip-vertical-right');
+        sliderItems[slideIndex - 1].classList.add('show');
+
+        if (sliderItems.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        }
+        else {
+            current.textContent = `${slideIndex}`;
+        }
+    }
+    //плюсуем индексы слайдов,при клике на след. слайд передаем 1 пример(1+1=2),приклике на предидущий слайд передаем -1 пример(2+-1=1)
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    sliderNext.addEventListener('click', () => {
+        plusSlides(1);
+    });
+
+    sliderPrev.addEventListener('click', () => {
+        plusSlides(-1);
+    });
+
+    // =============================================================
+
 });
 
 
