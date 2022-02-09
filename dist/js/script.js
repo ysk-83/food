@@ -433,6 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // =========================slider==============================
 
+    const slider = document.querySelector('.offer__slider');
     const sliderItems = document.querySelectorAll('.offer__slide');
     const sliderPrev = document.querySelector('.offer__slider-prev');
     const sliderNext = document.querySelector('.offer__slider-next');
@@ -467,6 +468,28 @@ document.addEventListener('DOMContentLoaded', () => {
         slide.style.width = width;
     });
 
+    // устанавл. position relative. для родительского контейнера,чтобы абсолютно спозиционировать точки управления слайдами
+    slider.style.position = 'relative';
+
+    //создаем обертку для точек и стилизуем ее
+    const indicators = document.createElement('ol');
+    const dots = [];
+    indicators.classList.add('carousel-indicators');
+    slider.append(indicators);
+
+    // создаем точки,стилизуем,вставляем в обертку indicators.Также добавлем точки  в массив dots(нужно для перебора массива точек в обработчиках событий)
+    for (let i = 0; i < sliderItems.length; i++) {
+        const dot = document.createElement('li');
+        dot.setAttribute('data-slide-to', i + 1);
+        dot.classList.add('dot');
+        if (i == 0) {
+            dot.style.opacity = 1;
+        }
+        indicators.append(dot);
+        dots.push(dot);
+    }
+
+
     sliderNext.addEventListener('click', () => {
         // если offset равна ширине умноженной на кол-во слайдов -1 то установ offset на ноль.При достижении последнего слайда карусель слайдов переместится на первый слайд
         if (offset == parseInt(width) * (sliderItems.length - 1)) {
@@ -492,6 +515,10 @@ document.addEventListener('DOMContentLoaded', () => {
         else {
             current.textContent = `${slideIndex}`;
         }
+
+        // Активные точки.Сперва для всех точек уст.непрозрачность 0,5,а потом к текущей точке(текущему слайду) уст. непрозрачность 1. 
+        dots.forEach(dot => dot.style.opacity = '.5');
+        dots[slideIndex - 1].style.opacity = 1;
     });
 
     sliderPrev.addEventListener('click', () => {
@@ -518,7 +545,35 @@ document.addEventListener('DOMContentLoaded', () => {
         else {
             current.textContent = `${slideIndex}`;
         }
+
+        dots.forEach(dot => dot.style.opacity = '.5');
+        dots[slideIndex - 1].style.opacity = 1;
     });
+
+    // Доб. функциональность точкам. 
+    dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+            const slideTo = e.target.getAttribute('data-slide-to');//получаем значение атрибута точки на которую был клик(на третей точке значение атрибута data-slide-to будет равно 3)
+
+            slideIndex = slideTo;//меняем индекс
+            offset = offset = parseInt(width) * (slideTo - 1);//задаем смещение
+
+            slidesField.style.transform = `translateX(-${offset}px`;//смещаем карусель
+
+            //меняем индексы общего кол-ва слайдов и номер текущего слайда
+            if (sliderItems.length < 10) {
+                current.textContent = `0${slideIndex}`;
+            }
+            else {
+                current.textContent = `${slideIndex}`;
+            }
+
+            //задаем класс активности,активная кнопка будет непрозрачной
+            dots.forEach(dot => dot.style.opacity = '.5');
+            dots[slideIndex - 1].style.opacity = 1;
+        });
+    });
+
 
 
     // 1 вариант(простой слайдер)
@@ -570,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }); */
 
 
-    
+
 
 
     // =============================================================
