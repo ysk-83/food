@@ -90,9 +90,11 @@
 /*!***************************************!*\
   !*** ./dist/js/modules/calculator.js ***!
   \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 function calculator() {
       // калькулятор=================================================
 
@@ -215,7 +217,7 @@ function calculator() {
       // ============================================================
 }
 
-module.exports = calculator;
+/* harmony default export */ __webpack_exports__["default"] = (calculator);
 
 /***/ }),
 
@@ -223,8 +225,13 @@ module.exports = calculator;
 /*!**********************************!*\
   !*** ./dist/js/modules/cards.js ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./dist/js/services/services.js");
+
 
 function cards() {
        /* используем классы============================= */
@@ -267,26 +274,13 @@ function cards() {
         }
     }
 
-
-    const getResource = async (url) => {
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-
-        return await res.json();
-    };
-
     // получение данных карточек из db.json. 1 вариант с использование класса
-    getResource('http://localhost:3000/menu')
+    Object(_services_services__WEBPACK_IMPORTED_MODULE_0__["getResource"])('http://localhost:3000/menu')
         .then(data => {
             data.forEach(({ title, altimg, img, descr, price }) => {
                 new MenuItem(title, altimg, img, descr, price, '.menu .container').render();
             });
         });
-
-
 
     // получение данных карточек из db.json. 2 вариант(без использования класа,формируем карточки "на лету")
     /* getResource('http://localhost:3000/menu')
@@ -314,7 +308,7 @@ function cards() {
     /* ============================================== */
 }
 
-module.exports = cards;
+/* harmony default export */ __webpack_exports__["default"] = (cards);
 
 /***/ }),
 
@@ -322,12 +316,19 @@ module.exports = cards;
 /*!**********************************!*\
   !*** ./dist/js/modules/forms.js ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function forms() {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modal */ "./dist/js/modules/modal.js");
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/services */ "./dist/js/services/services.js");
+
+
+
+function forms(formSelector, modalTimeOut) {
         /* =========================Forms===================== */
-        const forms = document.querySelectorAll('form');
+        const forms = document.querySelectorAll(formSelector);
 
         const message = {
             loading: 'img/spinner/054_spinner.svg',
@@ -339,18 +340,7 @@ function forms() {
             bindPostData(item);
         });
     
-        // реализация отправки данных на сервер через функцию.
-        const postData = async (url, data) => {
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: data,
-            });
-    
-            return await res.json();
-        };
+        
     
     
         function bindPostData(form) {
@@ -376,7 +366,7 @@ function forms() {
                 // 2 вариант реализации преобразования данных формы FormData в формат JSON(более новый способ)
                 const json = JSON.stringify(Object.fromEntries(formData.entries()));
     
-                postData('http://localhost:3000/requests', json)
+                Object(_services_services__WEBPACK_IMPORTED_MODULE_1__["postData"])('http://localhost:3000/requests', json)
                     .then(data => {
                         console.log(data);
                         showThanksModal(message.success);
@@ -438,7 +428,7 @@ function forms() {
         function showThanksModal(message) {
             const prevModalDialog = document.querySelector('.modal__dialog');
             prevModalDialog.classList.add('hide');
-            openModal();
+            Object(_modal__WEBPACK_IMPORTED_MODULE_0__["openModal"])('.modal', modalTimeOut);
     
             const thanksModal = document.createElement('div');
             thanksModal.classList.add('modal__dialog');
@@ -454,14 +444,14 @@ function forms() {
                 thanksModal.remove();
                 prevModalDialog.classList.remove('hide');
                 prevModalDialog.classList.add('show');
-                closeModal();
+                Object(_modal__WEBPACK_IMPORTED_MODULE_0__["closeModal"])('.modal');
             }, 2000);
         }
     
         /* -============================================== */
 }
 
-module.exports = forms;
+/* harmony default export */ __webpack_exports__["default"] = (forms);
 
 /***/ }),
 
@@ -469,52 +459,67 @@ module.exports = forms;
 /*!**********************************!*\
   !*** ./dist/js/modules/modal.js ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default, closeModal, openModal */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function modal() {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "closeModal", function() { return closeModal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openModal", function() { return openModal; });
+function openModal(modalSelector, modalTimeOut) {
+    const modal = document.querySelector(modalSelector);
+
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+
+    if(modalTimeOut) {
+        clearInterval(modalTimeOut);
+    }
+    
+}
+
+function closeModal(modalSelector) {
+    const modal = document.querySelector(modalSelector);
+
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function modal(triggerSelector, modalSelector, modalTimeOut) {
        /* ===================Modal===================== */
-       const modalOpen = document.querySelectorAll('[data-modal]');
-       const modal = document.querySelector('.modal');
-       // const modalClose = document.querySelectorAll('[data-close]');
+       //для независимой работы модулей жестко закрепленые части(кнопки на странице,формы и тд.) переводим в аргументы функции,а эти селекторы передаем в виде аргументов при вызове этой функции в файле script.js 
+       const modalOpen = document.querySelectorAll(triggerSelector);
+       const modal = document.querySelector(modalSelector);
+       
    
-       function openModal() {
-           modal.classList.add('show');
-           modal.classList.remove('hide');
-           document.body.style.overflow = 'hidden';
-           clearInterval(modalTimeOut);
-       }
-   
-       function closeModal() {
-           modal.classList.add('hide');
-           modal.classList.remove('show');
-           document.body.style.overflow = '';
-       }
+      
    
        modalOpen.forEach(btn => {
-           btn.addEventListener('click', openModal);
+           //колбэк функцию openModal,нельзя сразу вызывать с ()(дужками)так как она вызовется сразу при построении страницы.Для того чтобы она вызывалась только по клику и для того чтобы мы могли передать аргумент в колбэк функцию,оборачиваем ее в стрелочную функцию
+           btn.addEventListener('click', () => openModal(modalSelector, modalTimeOut));
        });
    
-       /*  modalClose.forEach(btn => {
-            btn.addEventListener('click', closeModal);
-        }); */
+       
    
        modal.addEventListener('click', (e) => {
            if (e.target === modal || e.target.getAttribute('data-close') == '') {
-               closeModal();
+               closeModal(modalSelector);
            }
        });
    
        document.addEventListener('keydown', (e) => {
            if (e.code === 'Escape' && modal.classList.contains('show')) {
-               closeModal();
+               closeModal(modalSelector);
            }
        });
    
-       const modalTimeOut = setTimeout(openModal, 50000);
+       
+
        function showModalByScroll() {
            if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
-               openModal();
+               openModal(modalSelector, modalTimeOut);
                window.removeEventListener('scroll', showModalByScroll);
            }
        }
@@ -524,7 +529,9 @@ function modal() {
        /* ============================================= */
 }
 
-module.exports = modal;
+/* harmony default export */ __webpack_exports__["default"] = (modal);
+
+
 
 /***/ }),
 
@@ -532,211 +539,160 @@ module.exports = modal;
 /*!***********************************!*\
   !*** ./dist/js/modules/slider.js ***!
   \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function slider() {
-       // =========================slider==============================
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//в аргументах функции используем деструктуризацию обьекта,в вызывающей функции slider() в script.js в аргументы передаем обьект с селекторами,при этом их можно передавать в произвольном порядке(не втом порядке как они указаны здесь в функции)
+function slider({ container, slide, nextArrow, prevArrow, totalCounter, currentCounter, wrapper, field }) {
+    // =========================slider==============================
 
-       const slider = document.querySelector('.offer__slider');
-       const sliderItems = document.querySelectorAll('.offer__slide');
-       const sliderPrev = document.querySelector('.offer__slider-prev');
-       const sliderNext = document.querySelector('.offer__slider-next');
-       const total = document.querySelector('#total');
-       const current = document.querySelector('#current');
-       const slidesWrapper = document.querySelector('.offer__slider-wrapper');
-       const slidesField = document.querySelector('.offer__slider-inner');
-       const width = window.getComputedStyle(slidesWrapper).width;
-   
-       let slideIndex = 1; //установили индекс на единицу для удобства,отсчет текущего слайда будет начинатся с единицы,а не нуля.Это точка отсчета
-       let offset = 0; //точка отсчета,необходимая для расчета растояния в пикселях,на сколько нужно смещать изображение влево или вправо,что-бы оно отображалось в окошке слайдера которое мы видим
-   
-       // 2 вариант(сложный слайдер)
-       // .Добавляем ноль,если кол-во. слайдов ниже 10.Для общего кол-ва слайдов и номреа по порядку текущего слайда 
-       if (sliderItems.length < 10) {
-           total.textContent = `0${sliderItems.length}`;
-           current.textContent = `0${slideIndex}`;
-       }
-       else {
-           total.textContent = `${sliderItems.length}`;
-           current.textContent = `${slideIndex}`;
-       }
-   
-       // устанавл. инлайн стили что-бы все слайди изображения были одинаковой ширины,анимацию,скрываем все изобр вне контейнера.Первоначально ширина в 650px установлена для контейнера (.offer__slider).slidesField займет длинну в 400% от 650px,по числу слайдов
-       slidesField.style.width = 100 * sliderItems.length + '%';
-       slidesField.style.display = 'flex';
-       slidesField.style.transition = '0.5s all';
-   
-       slidesWrapper.style.overflow = 'hidden';
-   
-       sliderItems.forEach(slide => {
-           slide.style.width = width;
-       });
-   
-       // устанавл. position relative. для родительского контейнера,чтобы абсолютно спозиционировать точки управления слайдами
-       slider.style.position = 'relative';
-   
-       //создаем обертку для точек и стилизуем ее
-       const indicators = document.createElement('ol');
-       const dots = [];
-       indicators.classList.add('carousel-indicators');
-       slider.append(indicators);
-   
-       // создаем точки,стилизуем,вставляем в обертку indicators.Также добавлем точки  в массив dots(нужно для перебора массива точек в обработчиках событий)
-       for (let i = 0; i < sliderItems.length; i++) {
-           const dot = document.createElement('li');
-           dot.setAttribute('data-slide-to', i + 1);
-           dot.classList.add('dot');
-           if (i == 0) {
-               dot.style.opacity = 1;
-           }
-           indicators.append(dot);
-           dots.push(dot);
-       }
-   
-   
-       sliderNext.addEventListener('click', () => {
-           // если offset равна ширине умноженной на кол-во слайдов -1 то установ offset на ноль.При достижении последнего слайда карусель слайдов переместится на первый слайд
-           if (offset == parseInt(width) * (sliderItems.length - 1)) {
-               offset = 0;
-           } else {
-               offset += parseInt(width);
-           }
-   
-           // задаем смещение карусели слайдов по оси х влево
-           slidesField.style.transform = `translateX(-${offset}px`;
-   
-           // как только индекс дойдет до последнего слайда он перейдет на первый слайд.по кругу
-           if (slideIndex == sliderItems.length) {
-               slideIndex = 1;
-           } else {
-               slideIndex++;
-           }
-   
-           // меняем текущее значение счетчика индекса при перелистывании слайдов вперед
-           if (sliderItems.length < 10) {
-               current.textContent = `0${slideIndex}`;
-           }
-           else {
-               current.textContent = `${slideIndex}`;
-           }
-   
-           // Активные точки.Сперва для всех точек уст.непрозрачность 0,5,а потом к текущей точке(текущему слайду) уст. непрозрачность 1. 
-           dots.forEach(dot => dot.style.opacity = '.5');
-           dots[slideIndex - 1].style.opacity = 1;
-       });
-   
-       sliderPrev.addEventListener('click', () => {
-           if (offset == 0) {
-               offset = parseInt(width) * (sliderItems.length - 1);
-           } else {
-               offset -= parseInt(width);
-           }
-   
-           // задаем смещение карусели слайдов по оси х вправо
-           slidesField.style.transform = `translateX(-${offset}px`;
-   
-           // как только индекс дойдет до первого слайда он перейдет на последний слайд.по кругу
-           if (slideIndex == 1) {
-               slideIndex = sliderItems.length;
-           } else {
-               slideIndex--;
-           }
-   
-           // меняем текущее значение счетчика индекса при перелистывании слайдов назад
-           if (sliderItems.length < 10) {
-               current.textContent = `0${slideIndex}`;
-           }
-           else {
-               current.textContent = `${slideIndex}`;
-           }
-   
-           dots.forEach(dot => dot.style.opacity = '.5');
-           dots[slideIndex - 1].style.opacity = 1;
-       });
-   
-       // Доб. функциональность точкам. 
-       dots.forEach(dot => {
-           dot.addEventListener('click', (e) => {
-               const slideTo = e.target.getAttribute('data-slide-to');//получаем значение атрибута точки на которую был клик(на третей точке значение атрибута data-slide-to будет равно 3)
-   
-               slideIndex = slideTo;//меняем индекс
-               offset = parseInt(width) * (slideTo - 1); //задаем смещение
-   
-               slidesField.style.transform = `translateX(-${offset}px`;//смещаем карусель
-   
-               //меняем индексы общего кол-ва слайдов и номер текущего слайда
-               if (sliderItems.length < 10) {
-                   current.textContent = `0${slideIndex}`;
-               }
-               else {
-                   current.textContent = `${slideIndex}`;
-               }
-   
-               //задаем класс активности,активная кнопка будет непрозрачной
-               dots.forEach(dot => dot.style.opacity = '.5');
-               dots[slideIndex - 1].style.opacity = 1;
-           });
-       });
-   
-   
-   
-       // 1 вариант(простой слайдер)
-       /*     showSlides(slideIndex);
-       
-           if (sliderItems.length < 10) {
-               total.textContent = `0${sliderItems.length}`;
-           }
-           else {
-               total.textContent = `${sliderItems.length}`;
-           }
-       
-           function showSlides(n) {
-       
-               if (n > sliderItems.length) {
-                   slideIndex = 1;
-               }
-               if (n < 1) {
-                   slideIndex = sliderItems.length;
-               }
-       
-               sliderItems.forEach(slide => {
-                   slide.classList.add('hide');
-       
-               });
-       
-               sliderItems[slideIndex - 1].classList.remove('hide');
-               sliderItems[slideIndex - 1].classList.add('flip-vertical-right');
-               sliderItems[slideIndex - 1].classList.add('show');
-       
-               if (sliderItems.length < 10) {
-                   current.textContent = `0${slideIndex}`;
-               }
-               else {
-                   current.textContent = `${slideIndex}`;
-               }
-           }
-           //плюсуем индексы слайдов,при клике на след. слайд передаем 1 пример(1+1=2),приклике на предидущий слайд передаем -1 пример(2+-1=1)
-           function plusSlides(n) {
-               showSlides(slideIndex += n);
-           }
-       
-           sliderNext.addEventListener('click', () => {
-               plusSlides(1);
-           });
-       
-           sliderPrev.addEventListener('click', () => {
-               plusSlides(-1);
-           }); */
-   
-   
-   
-   
-   
-       // =============================================================
+    const slider = document.querySelector(container);
+    const sliderItems = document.querySelectorAll(slide);
+    const sliderPrev = document.querySelector(prevArrow);
+    const sliderNext = document.querySelector(nextArrow);
+    const total = document.querySelector(totalCounter);
+    const current = document.querySelector(currentCounter);
+    const slidesWrapper = document.querySelector(wrapper);
+    const slidesField = document.querySelector(field);
+    const width = window.getComputedStyle(slidesWrapper).width;
+
+    let slideIndex = 1; //установили индекс на единицу для удобства,отсчет текущего слайда будет начинатся с единицы,а не нуля.Это точка отсчета
+    let offset = 0; //точка отсчета,необходимая для расчета растояния в пикселях,на сколько нужно смещать изображение влево или вправо,что-бы оно отображалось в окошке слайдера которое мы видим
+
+    // 2 вариант(сложный слайдер)
+    // .Добавляем ноль,если кол-во. слайдов ниже 10.Для общего кол-ва слайдов и номреа по порядку текущего слайда 
+    if (sliderItems.length < 10) {
+        total.textContent = `0${sliderItems.length}`;
+        current.textContent = `0${slideIndex}`;
+    }
+    else {
+        total.textContent = `${sliderItems.length}`;
+        current.textContent = `${slideIndex}`;
+    }
+
+    // устанавл. инлайн стили что-бы все слайди изображения были одинаковой ширины,анимацию,скрываем все изобр вне контейнера.Первоначально ширина в 650px установлена для контейнера (.offer__slider).slidesField займет длинну в 400% от 650px,по числу слайдов
+    slidesField.style.width = 100 * sliderItems.length + '%';
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
+
+    slidesWrapper.style.overflow = 'hidden';
+
+    sliderItems.forEach(slide => {
+        slide.style.width = width;
+    });
+
+    // устанавл. position relative. для родительского контейнера,чтобы абсолютно спозиционировать точки управления слайдами
+    slider.style.position = 'relative';
+
+    //создаем обертку для точек и стилизуем ее
+    const indicators = document.createElement('ol');
+    const dots = [];
+    indicators.classList.add('carousel-indicators');
+    slider.append(indicators);
+
+    // создаем точки,стилизуем,вставляем в обертку indicators.Также добавлем точки  в массив dots(нужно для перебора массива точек в обработчиках событий)
+    for (let i = 0; i < sliderItems.length; i++) {
+        const dot = document.createElement('li');
+        dot.setAttribute('data-slide-to', i + 1);
+        dot.classList.add('dot');
+        if (i == 0) {
+            dot.style.opacity = 1;
+        }
+        indicators.append(dot);
+        dots.push(dot);
+    }
+
+
+    sliderNext.addEventListener('click', () => {
+        // если offset равна ширине умноженной на кол-во слайдов -1 то установ offset на ноль.При достижении последнего слайда карусель слайдов переместится на первый слайд
+        if (offset == parseInt(width) * (sliderItems.length - 1)) {
+            offset = 0;
+        } else {
+            offset += parseInt(width);
+        }
+
+        // задаем смещение карусели слайдов по оси х влево
+        slidesField.style.transform = `translateX(-${offset}px`;
+
+        // как только индекс дойдет до последнего слайда он перейдет на первый слайд.по кругу
+        if (slideIndex == sliderItems.length) {
+            slideIndex = 1;
+        } else {
+            slideIndex++;
+        }
+
+        // меняем текущее значение счетчика индекса при перелистывании слайдов вперед
+        if (sliderItems.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        }
+        else {
+            current.textContent = `${slideIndex}`;
+        }
+
+        // Активные точки.Сперва для всех точек уст.непрозрачность 0,5,а потом к текущей точке(текущему слайду) уст. непрозрачность 1. 
+        dots.forEach(dot => dot.style.opacity = '.5');
+        dots[slideIndex - 1].style.opacity = 1;
+    });
+
+    sliderPrev.addEventListener('click', () => {
+        if (offset == 0) {
+            offset = parseInt(width) * (sliderItems.length - 1);
+        } else {
+            offset -= parseInt(width);
+        }
+
+        // задаем смещение карусели слайдов по оси х вправо
+        slidesField.style.transform = `translateX(-${offset}px`;
+
+        // как только индекс дойдет до первого слайда он перейдет на последний слайд.по кругу
+        if (slideIndex == 1) {
+            slideIndex = sliderItems.length;
+        } else {
+            slideIndex--;
+        }
+
+        // меняем текущее значение счетчика индекса при перелистывании слайдов назад
+        if (sliderItems.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        }
+        else {
+            current.textContent = `${slideIndex}`;
+        }
+
+        dots.forEach(dot => dot.style.opacity = '.5');
+        dots[slideIndex - 1].style.opacity = 1;
+    });
+
+    // Доб. функциональность точкам. 
+    dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+            const slideTo = e.target.getAttribute('data-slide-to');//получаем значение атрибута точки на которую был клик(на третей точке значение атрибута data-slide-to будет равно 3)
+
+            slideIndex = slideTo;//меняем индекс
+            offset = parseInt(width) * (slideTo - 1); //задаем смещение
+
+            slidesField.style.transform = `translateX(-${offset}px`;//смещаем карусель
+
+            //меняем индексы общего кол-ва слайдов и номер текущего слайда
+            if (sliderItems.length < 10) {
+                current.textContent = `0${slideIndex}`;
+            }
+            else {
+                current.textContent = `${slideIndex}`;
+            }
+
+            //задаем класс активности,активная кнопка будет непрозрачной
+            dots.forEach(dot => dot.style.opacity = '.5');
+            dots[slideIndex - 1].style.opacity = 1;
+        });
+    });
+
+    // =============================================================
 }
 
-module.exports = slider;
+/* harmony default export */ __webpack_exports__["default"] = (slider);
 
 /***/ }),
 
@@ -744,14 +700,16 @@ module.exports = slider;
 /*!*********************************!*\
   !*** ./dist/js/modules/tabs.js ***!
   \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function tabs() {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, activeClass) {
         /* ================Tabs================ */
-        const tabsParent = document.querySelector('.tabheader__items');
-        const tabsChild = document.querySelectorAll('.tabheader__item');
-        const tabsContent = document.querySelectorAll('.tabcontent');
+        const tabsParent = document.querySelector(tabsParentSelector);
+        const tabsChild = document.querySelectorAll(tabsSelector);
+        const tabsContent = document.querySelectorAll(tabsContentSelector);
     
         function hideTabContent() {
             tabsContent.forEach(tab => {
@@ -759,18 +717,19 @@ function tabs() {
                 tab.classList.add('hide');
             });
             tabsChild.forEach(tab => {
-                tab.classList.remove('tabheader__item_active');
+                tab.classList.remove(activeClass);
             });
         }
     
         function showTabContent(i = 0) {
             tabsContent[i].classList.remove('hide');
             tabsContent[i].classList.add('show', 'fade');
-            tabsChild[i].classList.add('tabheader__item_active');
+            tabsChild[i].classList.add(activeClass);
         }
     
         tabsParent.addEventListener('click', e => {
-            if (e.target && e.target.classList.contains('tabheader__item')) {
+            //так как в функцию tabs() в качестве аргументов передаются селекторы querySelector(с точками),а в classList  без точек то чтобы селекторы нормально работали-берем селектор-аргумент и вырезаем у него точку вначале(tabsSelector.slice(1))
+            if (e.target && e.target.classList.contains(tabsSelector.slice(1))) {
                 tabsChild.forEach((item, i) => {
                     if (item == e.target) {
                         hideTabContent();
@@ -785,7 +744,7 @@ function tabs() {
         /* ============================================= */
 }
 
-module.exports = tabs;
+/* harmony default export */ __webpack_exports__["default"] = (tabs);
 
 /***/ }),
 
@@ -793,13 +752,15 @@ module.exports = tabs;
 /*!**********************************!*\
   !*** ./dist/js/modules/timer.js ***!
   \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-function timer() {
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function timer(id, deadLine) {
        /* ===============Timer================ */
 
-       const deadLine = '2022-03-14';
+       
        function getTimeRemaining(endtime) {
            const t = Date.parse(endtime) - Date.parse(new Date());
            const days = Math.floor(t / (1000 * 60 * 60 * 24));
@@ -849,11 +810,11 @@ function timer() {
            }
    
        }
-       setClock('.timer', deadLine);
+       setClock(id, deadLine);
        /* =========================================== */
 }
 
-module.exports = timer;
+/* harmony default export */ __webpack_exports__["default"] = (timer);
 
 /***/ }),
 
@@ -861,26 +822,47 @@ module.exports = timer;
 /*!***************************!*\
   !*** ./dist/js/script.js ***!
   \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/tabs */ "./dist/js/modules/tabs.js");
+/* harmony import */ var _modules_calculator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/calculator */ "./dist/js/modules/calculator.js");
+/* harmony import */ var _modules_cards__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/cards */ "./dist/js/modules/cards.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./dist/js/modules/forms.js");
+/* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/modal */ "./dist/js/modules/modal.js");
+/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/slider */ "./dist/js/modules/slider.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/timer */ "./dist/js/modules/timer.js");
+
+
+
+
+
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const tabs = __webpack_require__(/*! ./modules/tabs */ "./dist/js/modules/tabs.js");
-    const calculator = __webpack_require__(/*! ./modules/calculator */ "./dist/js/modules/calculator.js");
-    const cards = __webpack_require__(/*! ./modules/cards */ "./dist/js/modules/cards.js");
-    const forms = __webpack_require__(/*! ./modules/forms */ "./dist/js/modules/forms.js");
-    const modal = __webpack_require__(/*! ./modules/modal */ "./dist/js/modules/modal.js");
-    const slider = __webpack_require__(/*! ./modules/slider */ "./dist/js/modules/slider.js");
-    const timer = __webpack_require__(/*! ./modules/timer */ "./dist/js/modules/timer.js");
 
-    tabs();
-    calculator();
-    cards();
-    forms();
-    modal();
-    slider();
-    timer();
+    const modalTimeOut = setTimeout(() => Object(_modules_modal__WEBPACK_IMPORTED_MODULE_4__["openModal"])('.modal', modalTimeOut), 50000);
+
+    Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_0__["default"])('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    Object(_modules_calculator__WEBPACK_IMPORTED_MODULE_1__["default"])();
+    Object(_modules_cards__WEBPACK_IMPORTED_MODULE_2__["default"])();
+    Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])('form', modalTimeOut);
+    Object(_modules_modal__WEBPACK_IMPORTED_MODULE_4__["default"])('[data-modal]', '.modal', modalTimeOut);
+    Object(_modules_slider__WEBPACK_IMPORTED_MODULE_5__["default"])({
+        container: '.offer__slider',
+        slide: '.offer__slide',
+        nextArrow: '.offer__slider-next',
+        prevArrow: '.offer__slider-prev',
+        totalCounter: '#total',
+        currentCounter: '#current',
+        wrapper: '.offer__slider-wrapper',
+        field: '.offer__slider-inner',
+    });
+    Object(_modules_timer__WEBPACK_IMPORTED_MODULE_6__["default"])('.timer', '2022-05-01');
 });
 
 
@@ -939,6 +921,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+
+
+
+/***/ }),
+
+/***/ "./dist/js/services/services.js":
+/*!**************************************!*\
+  !*** ./dist/js/services/services.js ***!
+  \**************************************/
+/*! exports provided: postData, getResource */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postData", function() { return postData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getResource", function() { return getResource; });
+//функции получения данных с сервера и отправки данных на сервер являются сервисными функциями и их функционал переведен в отдельный файл
+// реализация отправки данных на сервер через функцию.
+const postData = async (url, data) => {
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: data,
+    });
+
+    return await res.json();
+};
+
+// получение данных для построения карточек с  товарами из db.json
+async function getResource(url) {
+    let res = await fetch(url);
+
+    if (!res.ok) {
+        throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    }
+
+    return await res.json();
+}
 
 
 
